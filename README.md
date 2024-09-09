@@ -37,7 +37,7 @@ We shall use the `handleSummary` function in the `generator.js` script to genera
 
 <!-- Read more about handle summary here -->
 
-> https://grafana.com/docs/k6/latest/results-output/end-of-test/custom-summary/
+[K6 Handle Summary] https://grafana.com/docs/k6/latest/results-output/end-of-test/custom-summary/
 
 Example:
 
@@ -86,8 +86,13 @@ export function handleSummary(data) {
 To run the script, you can use the below command:
 
 ```bash
-k6 run script.js
+k6 run script.js -e TEST_PLAN_KEY="CALC-2345" -e TEST_EXEC_KEY="CALC-0009"
 ```
+
+The `TEST_PLAN_KEY` and `TEST_EXEC_KEY` are the keys for the test plan and test execution respectively. The keys are used to identify the test plan and test execution on xray.
+Read more about the test plan and test execution keys here:
+
+[Read more here] https://docs.getxray.app/display/XRAY/Test+Execution
 
 The script will generate a json file that is compatible with xray.
 
@@ -98,24 +103,26 @@ The output of the script is a json file that is compatible with xray. The json f
 ```json
 {
   "info": {
-    "summary": "K6 Test execution - Mon Sep 09 2024 17:30:18 GMT+0300 (EAT)",
-    "description": "This is k6 test with maximum iteration duration of 3.95s, 200 passed requests and 0 failures on checks",
+    "summary": "K6 Test execution - Mon Sep 09 2024 17:56:13 GMT+0300 (EAT)",
+    "description": "This is k6 test with maximum iteration duration of 4.29s, 200 passed requests and 0 failures on checks",
     "user": "k6-user",
-    "startDate": "2024-09-09T14:30:18.000Z",
-    "finishDate": "2024-09-09T14:30:18.000Z"
+    "startDate": "2024-09-09T14:56:13.000Z",
+    "finishDate": "2024-09-09T14:56:13.000Z",
+    "testPlanKey": "CALC-2345"
   },
+  "testExecutionKey": "CALC-0009",
   "tests": [
     {
       "testKey": "CALC-01",
-      "start": "2024-09-09T14:30:18.000Z",
-      "finish": "2024-09-09T14:30:18.000Z",
+      "start": "2024-09-09T14:56:13.000Z",
+      "finish": "2024-09-09T14:56:13.000Z",
       "comment": "Test execution passed",
       "status": "PASSED"
     },
     {
       "testKey": "CALC-02",
-      "start": "2024-09-09T14:30:18.000Z",
-      "finish": "2024-09-09T14:30:18.000Z",
+      "start": "2024-09-09T14:56:13.000Z",
+      "finish": "2024-09-09T14:56:13.000Z",
       "comment": "Test execution passed",
       "status": "PASSED"
     }
