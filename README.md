@@ -156,6 +156,8 @@ group('CALC-01', function() {
 
 ![Xray Test output](./images/results.png)
 
+> The XRAY json output will be:
+
 ```json
 {
   "info": {
