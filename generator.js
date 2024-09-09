@@ -1,7 +1,7 @@
 function getKey(test, testKeyType) {
   const testKey = test.match(new RegExp(`${testKeyType}-\\d+`, "g"));
   if (testKey) {
-    return testKey[0];
+    return testKey ? testKey[0] : null;
   }
 }
 
@@ -11,36 +11,29 @@ function getKey(test, testKeyType) {
   Mark the entire group as failed
   This is because a group is considered to have passed if all the checks within it have passed
    */
-function checkMetrics(data, testKeyType) {
-  let fails = [];
-  let passes = [];
-  for (let {
-    checks: [...rest]
-  } of extractGroups(data["root_group"].groups)) {
-    Object.values(rest).forEach((value) => {
-      if (parseInt(value.fails) > 0) {
-        fails.push(getKey(value.path, testKeyType));
-      } else if (
-        !value.fails &&
-        parseInt(value.fails) === 0 &&
-        parseInt(value.passes) > 0
-      ) {
-        passes.push(getKey(value.path, testKeyType));
-      }
-    });
-    // remove values that failed from passed list
-    fails.forEach((key_) => {
-      passes = passes.filter((item) => item !== key_);
-    });
-  }
-  // remove duplicates and combine an array of failed and passed tests
-  // const pass = passes.length > 0 ? removeDuplicates(passes) : [];
-  // const fail = fails.length > 0 ? removeDuplicates(fails) : [];
-  return {
-    pass: passes.length > 0 ? removeDuplicates(passes) : [],
-    fail: fails.length > 0 ? removeDuplicates(fails) : []
-  };
-}
+  function checkMetrics(data, testKeyType) {
+    let fails = [];
+    let passes = [];
+    
+    for (let { checks } of extractGroups(data["root_group"].groups)) {
+      checks.forEach((value) => {
+        const key = getKey(value.path, testKeyType);
+        if (parseInt(value.fails) > 0) {
+          fails.push(key);
+        } else if (parseInt(value.passes) > 0) {
+          passes.push(key);
+        }
+      });
+    }
+  
+    // Remove failed keys from passes
+    passes = passes.filter((key) => !fails.includes(key));
+  
+    return {
+      pass: removeDuplicates(passes),
+      fail: removeDuplicates(fails)
+    };
+  }  
 
 function getTime(option, data) {
   if (option === "min") {
@@ -62,30 +55,25 @@ function getTime(option, data) {
  *
  */
 function modifyTests(data, timeNow) {
-  let tests = [];
-  let { pass, fail } = data;
-  if ((pass && pass.length !== 0) || (fail && fail.length !== 0)) {
-    const passed = "PASSED";
-    const failed = "FAILED";
-    Object.values(pass).forEach((value) => {
+  const tests = [];
+  const { pass = [], fail = [] } = data;
+  const statuses = { pass: "PASSED", fail: "FAILED" };
+
+  const addTests = (keys, status) => {
+    keys.forEach((key) => {
       tests.push({
-        testKey: value,
+        testKey: key,
         start: timeNow,
         finish: timeNow,
-        comment: `Test execution ${passed.toLocaleLowerCase()}`,
-        status: passed
+        comment: `Test execution ${status.toLowerCase()}`,
+        status: status
       });
     });
-    Object.values(fail).forEach((value) => {
-      tests.push({
-        testKey: value,
-        start: timeNow,
-        finish: timeNow,
-        comment: `Test execution ${failed.toLocaleLowerCase()}`,
-        status: failed
-      });
-    });
-  }
+  };
+
+  addTests(pass, statuses.pass);
+  addTests(fail, statuses.fail);
+
   return tests;
 }
 
