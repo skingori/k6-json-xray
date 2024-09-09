@@ -33,11 +33,9 @@
 
 ## How to setup the script
 
-We shall use the `handleSummary` function in the `generator.js` script to generate the json file. The `handleSummary` function takes in the k6 json output file as an argument and generates the json file.
+We shall use the `handleSummary` function provided by k6 and `textSummary` from our `generator.js` script to generate the json file. The `handleSummary` function takes in `data` object which we pass to the `textSummary` to modify it XRAY acceptable format.
 
-<!-- Read more about handle summary here -->
-
-[K6 Handle Summary](https://grafana.com/docs/k6/latest/results-output/end-of-test/custom-summary/)
+[Read more about k6 `HandleSummary` here](https://grafana.com/docs/k6/latest/results-output/end-of-test/custom-summary/)
 
 Example:
 
