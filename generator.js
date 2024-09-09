@@ -1,5 +1,5 @@
-function getKey(test) {
-  const testKey = test.match(/QA-\d+/g);
+function getKey(test, testKeyType) {
+  const testKey = test.match(new RegExp(`${testKeyType}-\\d+`, "g"));
   if (testKey) {
     return testKey[0];
   }
@@ -11,7 +11,7 @@ function getKey(test) {
   Mark the entire group as failed
   This is because a group is considered to have passed if all the checks within it have passed
    */
-function checkMetrics(data) {
+function checkMetrics(data, testKeyType) {
   let fails = [];
   let passes = [];
   for (let {
@@ -19,13 +19,13 @@ function checkMetrics(data) {
   } of extractGroups(data["root_group"].groups)) {
     Object.values(rest).forEach((value) => {
       if (parseInt(value.fails) > 0) {
-        fails.push(getKey(value.path));
+        fails.push(getKey(value.path, testKeyType));
       } else if (
         !value.fails &&
         parseInt(value.fails) === 0 &&
         parseInt(value.passes) > 0
       ) {
-        passes.push(getKey(value.path));
+        passes.push(getKey(value.path, testKeyType));
       }
     });
     // remove values that failed from passed list
@@ -112,7 +112,7 @@ function makeJiraTests(tests, timeNow, min, max, metrics, key) {
   plan.testExecutionKey = __ENV.TEST_EXEC_KEY;
   plan.info.summary = `K6 Test execution - ${timeNow}`;
   plan.info.description = `This is k6 test with maximum iteration duration of ${max}s, ${passMetrics} passed requests and ${failMetrics} failures on checks`;
-  plan.info.user = "OPS AZA";
+  plan.info.user = "k6-user";
   plan.info.startDate = timeNow;
   plan.info.finishDate = timeNow;
   plan.info.testPlanKey =
@@ -155,8 +155,8 @@ function getTimeNow() {
   return new Date(new Date().toString());
 }
 
-export function getSummary(data, key) {
-  let raw = checkMetrics(data);
+export function getSummary(data, key, testKeyType) {
+  let raw = checkMetrics(data, testKeyType);
   let timeNow = getTimeNow();
   let min = getTime("min", data);
   let max = getTime("max", data);
