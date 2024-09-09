@@ -37,7 +37,7 @@ We shall use the `handleSummary` function in the `generator.js` script to genera
 
 <!-- Read more about handle summary here -->
 
-[K6 Handle Summary] https://grafana.com/docs/k6/latest/results-output/end-of-test/custom-summary/
+[K6 Handle Summary](https://grafana.com/docs/k6/latest/results-output/end-of-test/custom-summary/)
 
 Example:
 
@@ -92,7 +92,7 @@ k6 run script.js -e TEST_PLAN_KEY="CALC-2345" -e TEST_EXEC_KEY="CALC-0009"
 The `TEST_PLAN_KEY` and `TEST_EXEC_KEY` are the keys for the test plan and test execution respectively. The keys are used to identify the test plan and test execution on xray.
 Read more about the test plan and test execution keys here:
 
-[Read more here] https://docs.getxray.app/display/XRAY/Test+Execution
+[Read more here](https://docs.getxray.app/display/XRAY/Test+Execution)
 
 The script will generate a json file that is compatible with xray.
 
