@@ -130,7 +130,7 @@ The output of the script is a json file that is compatible with xray. The json f
 }
 ```
 
-> What if the one of the test checks inside a group fails?
+### What if the one of the test checks inside a group fails?
 
 The script will assign the status of the test to `FAILED` and the comment will be the error message.
 
@@ -154,7 +154,7 @@ group('CALC-01', function() {
 
 > The script will generate the following json output:
 
-![Xray Test Cases](./images/results.png)
+![Xray Test output](./images/results.png)
 
 ```json
 {
