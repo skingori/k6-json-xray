@@ -129,3 +129,59 @@ The output of the script is a json file that is compatible with xray. The json f
   ]
 }
 ```
+
+> What if the one of the test checks inside a group fails?
+
+The script will assign the status of the test to `FAILED` and the comment will be the error message.
+
+Example:
+
+> If you have the folowing code in your k6 script:
+
+```javascript
+group('CALC-01', function() {
+    const resp = http.get('http://test.k6.io');
+    check(resp, {
+        'status is 500': (r) => r.status === 500,
+    });
+
+    check(resp, {
+        'status is 200': (r) => r.status === 200,
+    });
+    sleep(1);
+});
+```
+
+> The script will generate the following json output:
+
+![Xray Test Cases](./images/results.png)
+
+```json
+{
+  "info": {
+    "summary": "K6 Test execution - Mon Sep 09 2024 18:18:31 GMT+0300 (EAT)",
+    "description": "This is k6 test with maximum iteration duration of 4.02s, 200 passed requests and 100 failures on checks",
+    "user": "k6-user",
+    "startDate": "2024-09-09T15:18:31.000Z",
+    "finishDate": "2024-09-09T15:18:31.000Z",
+    "testPlanKey": "CALC-2345"
+  },
+  "testExecutionKey": "CALC-0009",
+  "tests": [
+    {
+      "testKey": "CALC-02",
+      "start": "2024-09-09T15:18:31.000Z",
+      "finish": "2024-09-09T15:18:31.000Z",
+      "comment": "Test execution passed",
+      "status": "PASSED"
+    },
+    {
+      "testKey": "CALC-01",
+      "start": "2024-09-09T15:18:31.000Z",
+      "finish": "2024-09-09T15:18:31.000Z",
+      "comment": "Test execution failed",
+      "status": "FAILED"
+    }
+  ]
+}
+```
